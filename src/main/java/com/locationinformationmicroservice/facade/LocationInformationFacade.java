@@ -10,14 +10,15 @@ import com.locationinformationmicroservice.service.WikiService;
 public class LocationInformationFacade {
   public static HashMap<String, String> getDetails (String lat, String lon) {
     HashMap<String, String> details = new HashMap<String, String>();
-    
+    HashMap<String, String> location = GeocodingService.getDetails(lat, lon);
     // Input the values
-    details.put("Locationlat", GeocodingService.getDetails(lat, lon).get("Locationlat"));
-    details.put("Locationlon", GeocodingService.getDetails(lat, lon).get("Locationlon"));
-    details.put("Image", ImageService.getImages(GeocodingService.getDetails(lat, lon)));
-    details.put("wiki", WikiService.getLink(GeocodingService.getDetails(lat, lon)));
+    details.put("images", ImageService.getImages(location.get("state")));
+    details.put("wiki", WikiService.getLink(location));
     details.put("lat", lat);
     details.put("lon", lon);
+    details.put("city", location.get("city"));
+    details.put("state", location.get("state"));
+    details.put("country", location.get("country"));
     return  details;
   }
 }
