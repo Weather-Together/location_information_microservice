@@ -15,7 +15,7 @@ public class LocationInformationFacade {
     details.put("Locationlat", GeocodingService.getDetails(lat, lon).get("Locationlat"));
     details.put("Locationlon", GeocodingService.getDetails(lat, lon).get("Locationlon"));
     details.put("Image", ImageService.getImages(GeocodingService.getDetails(lat, lon)));
-    details.put("Wiki", WikiService.getLink(GeocodingService.getDetails(lat, lon)));
+    details.put("wiki", WikiService.getLink(GeocodingService.getDetails(lat, lon)));
     details.put("lat", lat);
     details.put("lon", lon);
     return  details;

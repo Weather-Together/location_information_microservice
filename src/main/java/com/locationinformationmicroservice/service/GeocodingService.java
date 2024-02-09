@@ -10,7 +10,7 @@ public class GeocodingService {
     details.put("Locationlat", lat);
     details.put("Locationlon", lon);
     details.put("city", "city");
-    details.put("state", "state");
+    details.put("state", "Utah");
     details.put("country", "country");
     return details;
   }
