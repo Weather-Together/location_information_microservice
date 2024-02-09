@@ -7,8 +7,8 @@ public class ImageService {
     String uri = "https://api.unsplash.com/" + "search/photos/?client_id=" + "tYtkSb6r-DJk9OdkgGFOURWL5fCgIdv_m_6khsBDugo" + "&query=" + state;
     RestTemplate restTemplate = new RestTemplate();
     String result = restTemplate.getForObject(uri, String.class);
-
+    String image = result.split("\"raw\":\"")[1].split("\",\"full\":")[0];
     
-    return result;
+    return image;
   }
 }
