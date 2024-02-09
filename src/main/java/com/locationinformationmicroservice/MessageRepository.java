@@ -1,6 +1,8 @@
-package com.example.locationinformationmicroservice;
+package com.locationinformationmicroservice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.locationinformationmicroservice.model.Message;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {}

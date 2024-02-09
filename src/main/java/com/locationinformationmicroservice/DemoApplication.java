@@ -1,4 +1,4 @@
-package com.example.locationinformationmicroservice;
+package com.locationinformationmicroservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

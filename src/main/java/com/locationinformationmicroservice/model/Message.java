@@ -1,4 +1,4 @@
-package com.example.locationinformationmicroservice;
+package com.locationinformationmicroservice.model;
 
 //import javax.persistence.*;
 import jakarta.persistence.*;

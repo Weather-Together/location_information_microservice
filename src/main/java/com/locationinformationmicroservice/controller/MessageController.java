@@ -1,7 +1,11 @@
-package com.example.locationinformationmicroservice;
+package com.locationinformationmicroservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.locationinformationmicroservice.MessageRepository;
+import com.locationinformationmicroservice.model.Message;
+
 import java.util.Optional;
 @RestController
 @RequestMapping("/message")
