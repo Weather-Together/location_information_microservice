@@ -8,8 +8,8 @@ import com.locationinformationmicroservice.service.WikiService;
 
 
 public class LocationInformationFacade {
-  public static HashMap<String, String> getDetails (String lat, String lon, String image_api_key, String geo_api_key) {
-    HashMap<String, String> details = new HashMap<String, String>();
+  public static HashMap<String, Object> getDetails (String lat, String lon, String image_api_key, String geo_api_key) {
+    HashMap<String, Object> details = new HashMap<String, Object>();
     HashMap<String, String> location = GeocodingService.getDetails(lat, lon, geo_api_key);
     
     // @Value("${mbk.secret}")
