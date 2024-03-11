@@ -4,6 +4,9 @@ import java.util.HashMap;
 
 import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 public class GeocodingService {
   
   public static HashMap<String, String> getDetails (String lat, String lon, String geo_api_key) {
@@ -13,12 +16,22 @@ public class GeocodingService {
     
     HashMap<String, String> details = new HashMap<String, String>();
 
+    Gson gson = new Gson();
+    JsonObject jsonResult = gson.fromJson(result, JsonObject.class);
+    JsonObject address = jsonResult.getAsJsonObject("address");
+    String city = null;
+    if (address.has("city") && !address.get("city").isJsonNull()) {
+        city = address.get("city").getAsString();
+    }
+    String state = address.get("state").getAsString();
+    String country = address.get("country").getAsString();
+
     // Input the values
     details.put("Locationlat", lat);
     details.put("Locationlon", lon);
-    // details.put("city", result.split(",\"city\":\"")[1].split("\",\"")[0]);
-    details.put("state", result.split(",\"state\":\"")[1].split("\",\"")[0]);
-    details.put("country", result.split(",\"country\":\"")[1].split("\",\"")[0]);
+    details.put("city", city);
+    details.put("state", state);
+    details.put("country", country);
     return details;
   }
 }
