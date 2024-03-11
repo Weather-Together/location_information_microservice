@@ -11,7 +11,7 @@ public class WikiService {
   public static String getLink (HashMap<String, String> location) {
     String city = location.get("city");
     String url = "";
-    if (city == null) {
+    if (city != null) {
       String uri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + city;
       RestTemplate restTemplate = new RestTemplate();
       String result = restTemplate.getForObject(uri, String.class);
@@ -31,7 +31,7 @@ public class WikiService {
         }
       }
     } else {
-      
+      url = "lol";
     }
 
     return  url;    
