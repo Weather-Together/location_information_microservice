@@ -11,12 +11,13 @@ public class LocationInformationFacade {
   public static HashMap<String, Object> getDetails (String lat, String lon, String image_api_key, String geo_api_key) {
     HashMap<String, Object> details = new HashMap<String, Object>();
     HashMap<String, String> location = GeocodingService.getDetails(lat, lon, geo_api_key);
-    
+    HashMap<String, String> wiki = WikiService.getLink(location);
+
     // @Value("${mbk.secret}")
     // private String SECRET_KEY;
     // Input the values
-    details.put("images", ImageService.getImages(location.get("state"), image_api_key));
-    details.put("wiki", WikiService.getLink(location));
+    details.put("images", ImageService.getImages(location.get(wiki.get("specificity")), image_api_key));
+    details.put("wiki", wiki.get("url"));
     details.put("lat", lat);
     details.put("lon", lon);
     details.put("city", location.get("city"));

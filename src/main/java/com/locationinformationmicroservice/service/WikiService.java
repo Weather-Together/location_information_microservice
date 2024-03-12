@@ -8,52 +8,59 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class WikiService {
-  public static String getLink (HashMap<String, String> location) {
-    String city = location.get("city");
+  public static HashMap<String, String> getLink (HashMap<String, String> location) {
+    HashMap<String, String> urlHash = new HashMap<String, String>();
     String url = "";
-    if (city != null) {
-      String uri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + city;
-      RestTemplate restTemplate = new RestTemplate();
-      String result = restTemplate.getForObject(uri, String.class);
-      Integer articleNumber = WikiService.returnsArticle(result);
+    String specificity = "";
 
-      if (articleNumber > 0 && city != null) {
-        url = WikiService.fullURL(articleNumber, result);
-      } else {
-        String state = location.get("state");
-        String stateUri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + state;
-        RestTemplate stateRestTemplate = new RestTemplate();
-        String stateResult = stateRestTemplate.getForObject(stateUri, String.class);
-        Integer stateArticleNumber = WikiService.returnsArticle(stateResult);
-        url = "this";
-        if (stateArticleNumber > 0 && state != null) {
-          url = WikiService.fullURL(stateArticleNumber, stateResult);
+    String city = location.get("city");
+    String uri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + city;
+    RestTemplate restTemplate = new RestTemplate();
+    String result = restTemplate.getForObject(uri, String.class);
+    Integer articleNumber = WikiService.returnsArticle(result);
+
+    if (articleNumber > 0 && city != null) {
+      url = WikiService.fullURL(articleNumber, result);
+      specificity = "city";
+    } 
+    else {
+      String state = location.get("state");
+      String stateUri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + state;
+      RestTemplate stateRestTemplate = new RestTemplate();
+      String stateResult = stateRestTemplate.getForObject(stateUri, String.class);
+      Integer stateArticleNumber = WikiService.returnsArticle(stateResult);
+      if (stateArticleNumber > 0 && state != null) {
+        url = WikiService.fullURL(stateArticleNumber, stateResult);
+        specificity = "state";
+      } 
+      else {
+        String region = location.get("region");
+        String regionUri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + region;
+        RestTemplate regionRestTemplate = new RestTemplate();
+        String regionResult = regionRestTemplate.getForObject(regionUri, String.class);
+        Integer regionArticleNumber = WikiService.returnsArticle(regionResult);
+
+        if (regionArticleNumber > 0 && region != null) {
+          url = WikiService.fullURL(regionArticleNumber, regionResult);
+          specificity = "region";
         } 
-      //   else {
-      //     String region = location.get("region");
-      //     String regionUri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + region;
-      //     RestTemplate regionRestTemplate = new RestTemplate();
-      //     String regionResult = regionRestTemplate.getForObject(regionUri, String.class);
-      //     Integer regionArticleNumber = WikiService.returnsArticle(regionResult);
-  
-      //     if (regionArticleNumber > 0 && region != null) {
-      //       url = WikiService.fullURL(regionArticleNumber, regionResult);
-      //     } 
-      //     else {
-      //         String country = location.get("country");
-      //         String countryUri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + country;
-      //         RestTemplate countryRestTemplate = new RestTemplate();
-      //         String countryResult = countryRestTemplate.getForObject(countryUri, String.class);
-      //         Integer countryArticleNumber = WikiService.returnsArticle(countryResult);
-      
-      //         if (countryArticleNumber > 0) {
-      //           url = WikiService.fullURL(countryArticleNumber, countryResult);
-      //         }
-      //       }
-      //     }
+        else {
+            String country = location.get("country");
+            String countryUri = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles=" + country;
+            RestTemplate countryRestTemplate = new RestTemplate();
+            String countryResult = countryRestTemplate.getForObject(countryUri, String.class);
+            Integer countryArticleNumber = WikiService.returnsArticle(countryResult);
+    
+            if (countryArticleNumber > 0) {
+              url = WikiService.fullURL(countryArticleNumber, countryResult);
+              specificity = "country";
+            }
+          }
         }
       }
-    return  url;    
+    urlHash.put("url", url);
+    urlHash.put("specificity", specificity);
+    return  urlHash;    
     }
 
   // Helper method to determine if location returns wiki article
