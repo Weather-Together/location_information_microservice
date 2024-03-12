@@ -23,7 +23,14 @@ public class GeocodingService {
     if (address.has("city") && !address.get("city").isJsonNull()) {
         city = address.get("city").getAsString();
     }
-    String state = address.get("state").getAsString();
+    String state = null;
+    if (address.has("state") && !address.get("state").isJsonNull()) {
+        state = address.get("state").getAsString();
+    }
+    String region = null;
+    if (address.has("region") && !address.get("region").isJsonNull()) {
+        region = address.get("region").getAsString();
+    }
     String country = address.get("country").getAsString();
 
     // Input the values
@@ -31,6 +38,7 @@ public class GeocodingService {
     details.put("Locationlon", lon);
     details.put("city", city);
     details.put("state", state);
+    details.put("region", region);
     details.put("country", country);
     return details;
   }

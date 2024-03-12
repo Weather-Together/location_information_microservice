@@ -21,6 +21,7 @@ public class LocationInformationFacade {
     details.put("lon", lon);
     details.put("city", location.get("city"));
     details.put("state", location.get("state"));
+    details.put("region", location.get("region"));
     details.put("country", location.get("country"));
     // details.put("secret", SECRET_KEY);
     return  details;
