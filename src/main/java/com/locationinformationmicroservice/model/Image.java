@@ -11,7 +11,11 @@ public class Image {
   private Long id;
   private String country;
   private String state;
+  private String region;
+  private String city;
   private List<String> picUrls;
+
+  
   public Long getId() {
       return id;
   }
@@ -29,6 +33,18 @@ public class Image {
   }
   public void setState(String state) {
       this.state = state;
+  }
+  public String getCity() {
+      return city;
+  }
+  public void setCity(String city) {
+      this.city = city;
+  }
+  public String getRegion() {
+      return region;
+  }
+  public void setRegion(String region) {
+      this.region = region;
   }
   public List<String> getPics() {
       return picUrls;

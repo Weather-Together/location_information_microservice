@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.locationinformationmicroservice.ImageRepository;
 import com.locationinformationmicroservice.model.Image;
+import com.locationinformationmicroservice.facade.TestFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class TestController {
   @Autowired
   ImageRepository imageRepository;
   @PostMapping("/db_write")
-  public Image dbWrite(@RequestParam String country, @RequestParam String state, @RequestParam String url1, @RequestParam String url2) {
+  public Image dbWrite(@RequestParam String country, @RequestParam String state, @RequestParam String city, @RequestParam String region, @RequestParam String url1, @RequestParam String url2) {
     Image image = new Image();
     List<String> picUrls = new ArrayList<>();
     picUrls.add(url1);
@@ -55,6 +56,8 @@ public class TestController {
 
     image.setCountry(country);
     image.setState(state);
+    image.setRegion(region);
+    image.setCity(city);
     image.setPics(picUrls);
     return imageRepository.save(image);
   }
@@ -62,6 +65,11 @@ public class TestController {
   @GetMapping("/db_read/{id}")
   public Optional<Image> getImage(@PathVariable("id") Long id) {
     return imageRepository.findById(id);
+  }
+
+  @GetMapping("/db_find/{city}/{state}")
+  public Optional<Image> findImage(@PathVariable("city") String city, @PathVariable("state") String state) {
+    return TestFacade.findImage(city, state, imageRepository);
   }
 
 }
