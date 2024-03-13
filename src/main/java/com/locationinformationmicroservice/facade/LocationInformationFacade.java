@@ -22,7 +22,7 @@ public class LocationInformationFacade {
     Optional<Image> image = LocationInformationFacade.dbImage(location, wiki.get("specificity"), imageRepository);
 
     if (image.isEmpty()) {
-      pics = ImageService.getImages(location.get(wiki.get("specificity")), image_api_key);
+      pics = LocationInformationFacade.imageLookupAndSave(location, wiki.get("specificity"), image_api_key, imageRepository);
     }
 
 
@@ -42,6 +42,80 @@ public class LocationInformationFacade {
     String state = location.get("state");
     String region = location.get("region");
     String country = location.get("country");
+    if (specificity == "state") {
+      city = "none";
+    }
+    else if (specificity == "region") {
+      city = "none";
+      state = "none";
+    }
+    else if (specificity == "country") {
+      city = "none";
+      state = "none";
+      region = "none";
+    }
     return imageRepository.findFirstByCityAndStateAndRegionAndCountry(city, state, region, country);
   }
+
+  private static List<String> imageLookupAndSave (HashMap<String, String> location, String specificity, String image_api_key, ImageRepository imageRepository) {
+    // set location to proper specificity to save to database
+    String city = location.get("city");
+    String state = location.get("state");
+    String region = location.get("region");
+    String country = location.get("country");
+    if (specificity == "state") {
+      city = "none";
+    }
+    else if (specificity == "region") {
+      city = "none";
+      state = "none";
+    }
+    else if (specificity == "country") {
+      city = "none";
+      state = "none";
+      region = "none";
+    }
+
+    // look up images for location
+    List<String> pics = ImageService.getImages(location.get(specificity), image_api_key);
+
+    //if no pics returned, go to next level of specificity
+
+    pics = LocationInformationFacade.checkImageSpecificity(pics, specificity, location, image_api_key);
+    
+    // save images to database
+    Image image = new Image();
+    image.setCountry(country);
+    image.setState(state);
+    image.setRegion(region);
+    image.setCity(city);
+    image.setPics(pics);
+    imageRepository.save(image);
+
+
+    return pics;
+  }
+
+  private static List<String> checkImageSpecificity (List<String> pics, String specificity, HashMap<String, String> location, String image_api_key) {
+    if (pics.isEmpty()) {
+      if (specificity == "city") {
+        specificity = "state";
+      }
+      else if (specificity == "state") {
+        specificity = "region";
+      }
+      else if (specificity == "region") {
+        specificity = "country";
+      }
+      try {Thread.sleep(1000);} catch (InterruptedException e) {}
+      pics = ImageService.getImages(location.get(specificity), image_api_key);
+      if (pics.isEmpty() && specificity == "country") { pics.add("https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U"); }
+      pics = LocationInformationFacade.checkImageSpecificity(pics, specificity, location, image_api_key);
+      return pics;
+    }
+    else {
+      return pics;
+    }
+  }
+
 }

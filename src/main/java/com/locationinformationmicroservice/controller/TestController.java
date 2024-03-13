@@ -67,9 +67,9 @@ public class TestController {
     return imageRepository.findById(id);
   }
 
-  @GetMapping("/db_find/{city}/{state}")
-  public Optional<Image> findImage(@PathVariable("city") String city, @PathVariable("state") String state) {
-    return TestFacade.findImage(city, state, imageRepository);
+  @GetMapping("/db_find{country}")
+  public Optional<Image> findImage(@PathVariable("country") String country) {
+    return TestFacade.findImage(country, imageRepository);
   }
 
 }

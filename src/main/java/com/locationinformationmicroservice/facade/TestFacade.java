@@ -7,7 +7,7 @@ import java.util.Optional;
 public class TestFacade {
   
   
-  public static Optional<Image> findImage (String city, String state, ImageRepository imageRepository) {
-    return imageRepository.findFirstByCityAndStateAndRegionAndCountry(city, state, null, null);
+  public static Optional<Image> findImage (String country, ImageRepository imageRepository) {
+    return imageRepository.findFirstByCountry(country);
   }
 }
