@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface ImageRepository extends JpaRepository<Image, Long> {
   Optional<Image> findFirstByCityAndStateAndRegionAndCountry(String city, String state, String region, String country);
   Optional<Image> findFirstByCountry(String country);
+  Optional<Image> findFirstByKeyword(String keyword);
 }

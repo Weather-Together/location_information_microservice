@@ -13,6 +13,7 @@ public class Image {
   private String state;
   private String region;
   private String city;
+  private String keyword;
   private List<String> picUrls;
 
   
@@ -45,6 +46,12 @@ public class Image {
   }
   public void setRegion(String region) {
       this.region = region;
+  }
+  public String getKeyword() {
+      return keyword;
+  }
+  public void setKeyword(String keyword) {
+      this.keyword = keyword;
   }
   public List<String> getPics() {
       return picUrls;

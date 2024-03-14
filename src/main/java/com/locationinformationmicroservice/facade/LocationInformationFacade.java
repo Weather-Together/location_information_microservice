@@ -24,6 +24,9 @@ public class LocationInformationFacade {
     if (image.isEmpty()) {
       pics = LocationInformationFacade.imageLookupAndSave(location, wiki.get("specificity"), image_api_key, imageRepository);
     }
+    else {
+      pics = image.get().getPics();
+    }
 
 
     details.put("images", pics);
@@ -63,6 +66,7 @@ public class LocationInformationFacade {
     String state = location.get("state");
     String region = location.get("region");
     String country = location.get("country");
+    String keyword = location.get(specificity);
     if (specificity == "state") {
       city = "none";
     }
@@ -81,7 +85,7 @@ public class LocationInformationFacade {
 
     //if no pics returned, go to next level of specificity
 
-    pics = LocationInformationFacade.checkImageSpecificity(pics, specificity, location, image_api_key);
+    pics = LocationInformationFacade.checkImageSpecificity(pics, specificity, location, image_api_key, imageRepository);
     
     // save images to database
     Image image = new Image();
@@ -89,6 +93,7 @@ public class LocationInformationFacade {
     image.setState(state);
     image.setRegion(region);
     image.setCity(city);
+    image.setKeyword(keyword);
     image.setPics(pics);
     imageRepository.save(image);
 
@@ -96,7 +101,7 @@ public class LocationInformationFacade {
     return pics;
   }
 
-  private static List<String> checkImageSpecificity (List<String> pics, String specificity, HashMap<String, String> location, String image_api_key) {
+  private static List<String> checkImageSpecificity (List<String> pics, String specificity, HashMap<String, String> location, String image_api_key, ImageRepository imageRepository) {
     if (pics.isEmpty()) {
       if (specificity == "city") {
         specificity = "state";
@@ -107,15 +112,20 @@ public class LocationInformationFacade {
       else if (specificity == "region") {
         specificity = "country";
       }
-      try {Thread.sleep(1000);} catch (InterruptedException e) {}
-      pics = ImageService.getImages(location.get(specificity), image_api_key);
-      if (pics.isEmpty() && specificity == "country") { pics.add("https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U"); }
-      pics = LocationInformationFacade.checkImageSpecificity(pics, specificity, location, image_api_key);
+      Optional<Image> image = imageRepository.findFirstByKeyword(location.get(specificity));
+      if (image.get() == null) {
+        try {Thread.sleep(1000);} catch (InterruptedException e) {}
+        pics = ImageService.getImages(location.get(specificity), image_api_key);
+        if (pics.isEmpty() && specificity == "country") { pics.add("https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U"); }
+        pics = LocationInformationFacade.checkImageSpecificity(pics, specificity, location, image_api_key, imageRepository);
+      }
+      else {
+        pics = image.get().getPics();
+      }
       return pics;
     }
     else {
       return pics;
     }
   }
-
 }
